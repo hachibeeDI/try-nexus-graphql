@@ -1,0 +1,49 @@
+{
+  "name": "try-nexus-graphql",
+  "version": "1.0.0",
+  "description": "my test",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "check:type": "tsc --noEmit",
+    "check:lint": "eslint 'api/**/*.{js,ts}'",
+    "check:style": "prettier --check 'api/**/*.{js,ts}'",
+    "fix:lint": "yarn check:lint --fix",
+    "fix:style": "yarn check:style --write",
+    "fix:all": "yarn fix:lint && yarn fix:style",
+    "migrate": "prisma migrate dev --preview-feature",
+    "dev": "ts-node-dev --transpile-only --no-notify -r tsconfig-paths/register api/app.ts",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/hachibeeDI/try-nexus-graphql.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hachibeeDI/try-nexus-graphql/issues"
+  },
+  "homepage": "https://github.com/hachibeeDI/try-nexus-graphql#readme",
+  "dependencies": {
+    "@prisma/client": "^2.15.0",
+    "apollo-server": "^2.19.2",
+    "graphql": "^15.5.0",
+    "nexus": "^1.0.0"
+  },
+  "devDependencies": {
+    "@prisma/cli": "^2.15.0",
+    "@types/node": "10.17.3",
+    "@typescript-eslint/eslint-plugin": "4.14.0",
+    "@typescript-eslint/parser": "4.14.0",
+    "eslint": "7.10.0",
+    "eslint-config-prettier": "6.11.0",
+    "eslint-import-resolver-typescript": "^2.3.0",
+    "eslint-plugin-import": "^2.22.1",
+    "prettier": "2.1.2",
+    "ts-node-dev": "^1.1.1",
+    "tsconfig-paths": "^3.9.0",
+    "typescript": "^4.1.3"
+  }
+}
