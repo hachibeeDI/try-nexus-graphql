@@ -11,13 +11,12 @@ export const User = objectType({
 
 export const UserQuery = extendType({
   type: 'Query',
-
   definition(t) {
     t.nonNull.list.field('users', {
       type: 'User',
-      resolve() {
-        return [{id: 'test', name: 'aaa'}];
-      }
+      resolve(_, __, ctx) {
+        return ctx.db.user.findMany();
+      },
     });
   },
 });

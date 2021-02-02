@@ -11,6 +11,12 @@ generator client {
 }
 
 model User {
-  id    String  @id @default(uuid())
-  name  String
+  id   String @id @default(uuid())
+  name String
+  email String
+}
+
+model Organization {
+  id          String @id @default(uuid())
+  unique_name String @unique
 }

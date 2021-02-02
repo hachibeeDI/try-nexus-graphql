@@ -1,3 +1,5 @@
+import 'nexus-typegen';
+
 import {server} from './server';
 
 server.listen().then(({url}) => {
