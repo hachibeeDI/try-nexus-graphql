@@ -3,11 +3,16 @@
  * Do not make changes to this file directly
  */
 
-
+import * as prisma from "./node_modules/.prisma/client/index"
 import { Context } from "./api/context"
 
 
-
+declare global {
+  interface NexusGenCustomOutputProperties<TypeName extends string> {
+    crud: NexusPrisma<TypeName, 'crud'>
+    model: NexusPrisma<TypeName, 'model'>
+  }
+}
 
 declare global {
   interface NexusGen extends NexusGenTypes {}
@@ -29,10 +34,7 @@ export interface NexusGenScalars {
 
 export interface NexusGenObjects {
   Query: {};
-  User: { // root type
-    id: string; // String!
-    name: string; // String!
-  }
+  User: prisma.User;
 }
 
 export interface NexusGenInterfaces {
