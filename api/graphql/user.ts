@@ -1,6 +1,6 @@
 import {extendType, objectType} from 'nexus';
 
-import {isTokenValid} from '~/auth';
+import {parseToken} from '~/auth';
 
 export const User = objectType({
   name: 'User',
@@ -17,9 +17,11 @@ export const UserQuery = extendType({
     t.nonNull.list.field('users', {
       type: 'User',
       async resolve(_, __, ctx) {
-        if ((await isTokenValid(ctx.token)) === false) {
+        const {decoded} = await parseToken(ctx.token);
+        if (decoded == null) {
           throw Error('TODO: なんかmiddlewareとかで認証と認可はやるべきなのでがんばって');
         }
+        console.log(decoded);
 
         return ctx.db.user.findMany();
       },

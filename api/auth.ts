@@ -39,40 +39,40 @@ const client = jwksClient({
 });
 
 const getKey: GetPublicKeyOrSecret = (header, callback) => {
+  console.log(header);
   client.getSigningKey(header.kid ?? '' /** FIXME: need throw if undefined? */, (error, key) => {
     const signingKey = key.getPublicKey(); // NOTE: `key.publicKey || key.rsaPublicKey;` in the doc
+    console.log('signingKey: ', signingKey);
     callback(error, signingKey);
   });
 };
 
+const OPTIONS = {
+  audience: ENV.API_AUDIENCE,
+  issuer: `https://${ENV.AUTH0_DOMAIN}/`,
+  algorithms: ['RS256' as const],
+};
 /**
  * TODO: adress authentication and authorization functionality both
  */
-export async function isTokenValid(token?: string) {
-  if (token) {
-    const [_head, bearerToken] = token.split(' ');
-
-    return new Promise((resolve) => {
-      verify(
-        bearerToken,
-        getKey,
-        {
-          audience: ENV.API_AUDIENCE,
-          issuer: `https://${ENV.AUTH0_DOMAIN}/`,
-          algorithms: ['RS256'],
-        },
-        (error, decoded) => {
-          // TODO: iindesuka?
-          if (error) {
-            resolve({error});
-          }
-          if (decoded) {
-            resolve({decoded});
-          }
-        },
-      );
-    });
+export async function parseToken(token?: string): Promise<{decoded: unknown} | null> {
+  if (!token) {
+    return null;
   }
+  console.log('token: ', token);
 
-  return {error: 'No token provided'};
+  return new Promise((resolve, reject) => {
+    verify(token, getKey, OPTIONS, (error, decoded) => {
+      console.log('Parsing token....');
+      console.log(error, decoded);
+      // TODO: iindesuka?
+      if (error) {
+        reject(error);
+      }
+      if (decoded) {
+        resolve({decoded});
+      }
+      return reject(null);
+    });
+  });
 }
