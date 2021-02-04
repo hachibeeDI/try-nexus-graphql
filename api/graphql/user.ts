@@ -1,5 +1,7 @@
 import {extendType, objectType} from 'nexus';
 
+import {isTokenValid} from '~/auth';
+
 export const User = objectType({
   name: 'User',
 
@@ -15,6 +17,10 @@ export const UserQuery = extendType({
     t.nonNull.list.field('users', {
       type: 'User',
       async resolve(_, __, ctx) {
+        if ((await isTokenValid(ctx.token)) === false) {
+          throw Error('TODO: なんかmiddlewareとかで認証と認可はやるべきなのでがんばって');
+        }
+
         return ctx.db.user.findMany();
       },
     });

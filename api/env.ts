@@ -7,7 +7,7 @@ const declareEnvField = (path: string): string => {
   }
 
   return val;
-}
+};
 
 export const ENV = {
   AUTH0_DOMAIN: declareEnvField('AUTH0_DOMAIN'),
