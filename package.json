@@ -31,7 +31,12 @@
   "dependencies": {
     "@prisma/client": "^2.15.0",
     "apollo-server": "^2.19.2",
+    "apollo-server-express": "^2.19.2",
+    "express": "^4.17.1",
+    "express-jwt": "^6.0.0",
+    "express-jwt-authz": "^2.4.1",
     "graphql": "^15.5.0",
+    "jwks-rsa": "^1.12.2",
     "nexus": "^1.0.0",
     "nexus-plugin-prisma": "^0.29.0"
   },
