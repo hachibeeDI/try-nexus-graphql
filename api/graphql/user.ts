@@ -1,6 +1,6 @@
 import {extendType, objectType} from 'nexus';
 
-import {parseToken} from '~/auth';
+import {isAuthorized, parseToken} from '~/auth';
 
 export const User = objectType({
   name: 'User',
@@ -17,11 +17,15 @@ export const UserQuery = extendType({
     t.nonNull.list.field('users', {
       type: 'User',
       async resolve(_, __, ctx) {
-        const {decoded} = await parseToken(ctx.token);
-        if (decoded == null) {
+        const credential = await parseToken(ctx.token);
+        if (credential == null) {
           throw Error('TODO: なんかmiddlewareとかで認証と認可はやるべきなのでがんばって');
         }
-        console.log(decoded);
+
+        const authorized = isAuthorized(credential, ['read:messages']);
+        if (authorized === false) {
+          throw Error('TODO: 認可エラーに関する処理とかintercepter的なのを探していれてね');
+        }
 
         return ctx.db.user.findMany();
       },

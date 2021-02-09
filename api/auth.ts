@@ -39,10 +39,8 @@ const client = jwksClient({
 });
 
 const getKey: GetPublicKeyOrSecret = (header, callback) => {
-  console.log(header);
   client.getSigningKey(header.kid ?? '' /** FIXME: need throw if undefined? */, (error, key) => {
     const signingKey = key.getPublicKey(); // NOTE: `key.publicKey || key.rsaPublicKey;` in the doc
-    console.log('signingKey: ', signingKey);
     callback(error, signingKey);
   });
 };
@@ -52,10 +50,24 @@ const OPTIONS = {
   issuer: `https://${ENV.AUTH0_DOMAIN}/`,
   algorithms: ['RS256' as const],
 };
+
+/**
+ * Those fields are depends on how you configured in Auth0 (?)
+ */
+type ParsedCredential = {
+  iss: string;
+  sub: string;
+  aud: [string, string]; // ['https://dev-nsnjcdq3.jp.auth0.com/api/v2/', 'https://dev-nsnjcdq3.jp.auth0.com/userinfo'];
+  iat: number;
+  exp: number;
+  azp: string;
+  scope: ReadonlyArray<string>; // 'openid profile email read:current_user update:current_user_metadata';
+};
+
 /**
  * TODO: adress authentication and authorization functionality both
  */
-export async function parseToken(token?: string): Promise<{decoded: unknown} | null> {
+export async function parseToken(token?: string): Promise<ParsedCredential | null> {
   if (!token) {
     return null;
   }
@@ -67,12 +79,19 @@ export async function parseToken(token?: string): Promise<{decoded: unknown} | n
       console.log(error, decoded);
       // TODO: iindesuka?
       if (error) {
-        reject(error);
+        return reject(error);
       }
       if (decoded) {
-        resolve({decoded});
+        const scopes = (decoded as any)['scope'].split(' ');
+        const cred: ParsedCredential = {...decoded, scope: scopes} as any;
+        return resolve(cred);
       }
       return reject(null);
     });
   });
+}
+
+
+export function isAuthorized(credential: ParsedCredential, expectedScopes: ReadonlyArray<string>): boolean {
+  return expectedScopes.every(s => credential.scope.includes(s));
 }
