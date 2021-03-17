@@ -11,3 +11,17 @@ my test
 - ORM (Prisma2)
 
 - 認証 (Auth0)
+
+
+## Development
+
+### Get started
+
+```sh
+$ yarn install
+$ docker-compose up
+$ yarn db:generate
+$ yarn db:migrate
+
+$ yarn dev
+```
